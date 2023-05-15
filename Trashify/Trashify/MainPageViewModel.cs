@@ -21,10 +21,12 @@ namespace Trashify
         {
             PickPhotoCommand = new AsyncRelayCommand(ExecutePickPhoto);
             TakePhotoCommand = new AsyncRelayCommand(ExecuteTakePhoto);
-
+            Photo = null;
+            OutputLabel = string.Empty;
+            IsRunning = false;
         }
 
-public ICommand PickPhotoCommand { get; }
+        public ICommand PickPhotoCommand { get; }
 
         public ICommand TakePhotoCommand { get; }
         public ImageSource Photo { get; private set; }
