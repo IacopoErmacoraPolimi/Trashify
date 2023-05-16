@@ -9,13 +9,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.ComponentModel;
 
 namespace Trashify
 {
-    internal class MainPageViewModel
+    internal class MainPageViewModel : INotifyPropertyChanged
     {
         private const int ImageMaxSizeBytes = 4194304;
         private const int ImageMaxResolution = 1024;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public MainPageViewModel()
         {
@@ -29,13 +37,52 @@ namespace Trashify
         public ICommand PickPhotoCommand { get; }
 
         public ICommand TakePhotoCommand { get; }
-        public ImageSource Photo { get; private set; }
-        public string OutputLabel { get; private set; }
-        public bool IsRunning { get; private set; }
 
         private Task ExecutePickPhoto() => ProcessPhotoAsync(false);
 
         private Task ExecuteTakePhoto() => ProcessPhotoAsync(true);
+
+        private string outputLabel;
+        public string OutputLabel
+        {
+            get { return outputLabel; }
+            private set
+            {
+                if (outputLabel != value)
+                {
+                    outputLabel = value;
+                    OnPropertyChanged(nameof(OutputLabel));
+                }
+            }
+        }
+
+        private ImageSource photo;
+        public ImageSource Photo
+        {
+            get { return photo; }
+            set
+            {
+                if (photo != value)
+                {
+                    photo = value;
+                    OnPropertyChanged(nameof(Photo));
+                }
+            }
+        }
+
+        private bool isRunning;
+        public bool IsRunning
+        {
+            get { return isRunning; }
+            set
+            {
+                if (isRunning != value)
+                {
+                    isRunning = value;
+                    OnPropertyChanged(nameof(IsRunning));
+                }
+            }
+        }
 
         private async Task ProcessPhotoAsync(bool useCamera)
         {
@@ -56,9 +103,14 @@ namespace Trashify
 
                 Photo = ImageSource.FromStream(() => new MemoryStream(resizedPhoto));
 
-                OutputLabel = result.TagName.Equals("Negative")
-                  ? "This is not a big cat."
-                  : $"It looks {percent} a {result.TagName}.";
+                if (result.TagName == null)
+                {
+                    OutputLabel = "For some reason it returns null";
+                } else {
+                    OutputLabel = result.TagName.Equals("Negative")
+                      ? "This is not a big cat."
+                      : $"It looks {percent} a {result.TagName}.";
+                }
             }
         }
 
@@ -91,6 +143,7 @@ namespace Trashify
 
         private async Task<PredictionModel> ClassifyImage(Stream photoStream)
         {
+
             try
             {
                 IsRunning = true;
