@@ -98,10 +98,17 @@ namespace Trashify
                 // Custom Vision API call
                 var result = await ClassifyImage(new MemoryStream(resizedPhoto));
 
+                // result = Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction.Models.PredictionModel
+                Debug.WriteLine("************************************************    result :   " + result + "    *****************************\n");
+
                 // Change the percentage notation from 0.9 to display 90.0%
                 var percent = result.Probability.ToString("P1");
 
                 Photo = ImageSource.FromStream(() => new MemoryStream(resizedPhoto));
+
+                Debug.WriteLine("************************************************    result.TagType :   " + result.TagType + "   *****************************\n");
+                Debug.WriteLine("************************************************    result.TagName :   " + result.TagName + "   *****************************\n");
+                Debug.WriteLine("************************************************    result.TagId :   " + result.TagId + "   *****************************\n");
 
                 if (result.TagName == null)
                 {
@@ -164,6 +171,7 @@ namespace Trashify
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+                Debug.WriteLine("--------------------------------------------- message : " +  ex.Message + "  ----------------------");
                 return new PredictionModel();
             }
             finally
