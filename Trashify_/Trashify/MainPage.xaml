@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:Trashify="clr-namespace:Trashify"
+             x:Class="Trashify.MainPage">
+
+    <ContentPage.BindingContext>
+        <Trashify:MainPageViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="White" StatusBarStyle="DarkContent"/>
+    </ContentPage.Behaviors>
+
+    <ScrollView>
+        <Grid>
+            <VerticalStackLayout Spacing="100" VerticalOptions="Center" IsVisible="{Binding FirstPageVisible}">
+
+                <Image Source="trash.png" Aspect="AspectFill" HeightRequest="400" WidthRequest="300"/>
+
+                <HorizontalStackLayout Spacing="50" Padding="0" HorizontalOptions="Center">
+                    <Button Command="{Binding ChoosePhoto}" HorizontalOptions="Start" Text="Pick a picture" />
+
+                    <Button Command="{Binding TakePhoto}" HorizontalOptions="End" Text="Take a picture" />
+                </HorizontalStackLayout>
+
+                <VerticalStackLayout.Triggers>
+                    <Trigger TargetType="VerticalStackLayout" Property="IsVisible" Value="False">
+                        <Setter Property="HeightRequest" Value="0"/>
+                    </Trigger>
+                </VerticalStackLayout.Triggers>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="30" VerticalOptions="Fill" Padding="25" IsVisible="{Binding SecondPageVisible}">
+
+                <Image Source="trashify.png" Aspect="AspectFill" HeightRequest="60" WidthRequest="335" BackgroundColor="White" SemanticProperties.Description="Trash" />
+
+                <HorizontalStackLayout Spacing="80" HorizontalOptions="Center">
+                    <Image Source="{Binding Photo}" Aspect="AspectFill" HeightRequest="100" WidthRequest="100" />
+                    <Label Text="{Binding BinLabel}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="Fill" FontSize="20" FontFamily="BarlowCondensed" TextColor="{Binding BinColor}"/>
+                </HorizontalStackLayout>
+
+                <ActivityIndicator IsRunning="{Binding IsRunning}" HeightRequest="20" />
+
+                <Image Source="{Binding BinLogo}" Aspect="AspectFill" HeightRequest="250" WidthRequest="250" />
+
+                <Label Text="{Binding OutputLabel}" HorizontalTextAlignment="Center" HorizontalOptions="Fill" Padding="20"/>
+
+                <HorizontalStackLayout Spacing="50" Padding="0" HorizontalOptions="Center">
+                    <Button Command="{Binding PickPhotoCommand}" HorizontalOptions="Start" Text="Pick a picture" />
+
+                    <Button Command="{Binding TakePhotoCommand}" HorizontalOptions="End" Text="Take a picture" />
+                </HorizontalStackLayout>
+
+                <VerticalStackLayout.Triggers>
+                    <Trigger TargetType="VerticalStackLayout" Property="IsVisible" Value="False">
+                        <Setter Property="HeightRequest" Value="0"/>
+                    </Trigger>
+                </VerticalStackLayout.Triggers>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
+
+</ContentPage>
